@@ -1,35 +1,117 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [task, setTask] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [editId, setEditId] = useState(null);
+  const [editedTask, setEditedTask] = useState("");
 
+  const randomId = () => Date.now() + Math.random();
+
+  const handleAddClick = () => {
+    const newTodos = [
+      ...todos,
+      { id: randomId(), task: task.trim(), done: false },
+    ];
+    setTodos(newTodos);
+    setTask("");
+  };
+
+  const handleDeletClick = (todoId) => {
+    const newTodos = todos.filter((todo) => todoId !== todo.id);
+    setTodos(newTodos);
+  };
+
+  const handleEditClick = (todo) => {
+    setEditId(todo.id);
+    setEditedTask(todo.task);
+  };
+
+  const handleSaveClick = (todoId) => {
+    const newTodos = todos.map((todo) =>
+      todoId === todo.id ? { ...todo, task: editedTask.trim() } : todo
+    );
+    setTodos(newTodos);
+    setEditId(null);
+    setEditedTask("");
+  };
+
+  const handleTaskDone = (todoId) => {
+    const newTodos = todos.map((todo) => {
+      return todo.id === todoId ? { ...todo, done: !todo.done } : todo;
+    });
+    setTodos(newTodos);
+  };
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div id="main-body">
+        <h1 className="title">Todo App</h1>
+
+        <div id="add-task">
+          <input
+            type="text"
+            placeholder="Add your task here..."
+            value={task}
+            onChange={(e) => {
+              setTask(e.target.value);
+            }}
+          />
+          <button className="add-btn" onClick={handleAddClick}>
+            Add
+          </button>
+        </div>
+        <div id="todo-list">
+          <ul>
+            {todos.map((todo) => {
+              return (
+                <>
+                  <li key={todo.id}>
+                    <input
+                      type="checkbox"
+                      checked={todo.done}
+                      onChange={() => handleTaskDone(todo.id)}
+                    />
+                    {editId === todo.id ? (
+                      <>
+                        <input
+                          type="text"
+                          value={editedTask}
+                          onChange={(e) => setEditedTask(e.target.value)}
+                        />
+                        <button
+                          className="save-btn"
+                          onClick={() => handleSaveClick(todo.id)}
+                        >
+                          Save
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {todo.task}
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDeletClick(todo.id)}
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className="edit-btn"
+                          onClick={() => handleEditClick(todo)}
+                        >
+                          Edit
+                        </button>
+                      </>
+                    )}
+                  </li>
+                </>
+              );
+            })}
+          </ul>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
