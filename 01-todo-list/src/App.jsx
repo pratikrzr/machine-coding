@@ -10,12 +10,16 @@ function App() {
   const randomId = () => Date.now() + Math.random();
 
   const handleAddClick = () => {
-    const newTodos = [
-      ...todos,
-      { id: randomId(), task: task.trim(), done: false },
-    ];
-    setTodos(newTodos);
-    setTask("");
+    if (task.length > 0) {
+      const newTodos = [
+        ...todos,
+        { id: randomId(), task: task.trim(), done: false },
+      ];
+      setTodos(newTodos);
+      setTask("");
+    } else {
+      alert("Enter something you cant submit empty tasks");
+    }
   };
 
   const handleDeletClick = (todoId) => {
@@ -29,12 +33,16 @@ function App() {
   };
 
   const handleSaveClick = (todoId) => {
-    const newTodos = todos.map((todo) =>
-      todoId === todo.id ? { ...todo, task: editedTask.trim() } : todo
-    );
-    setTodos(newTodos);
-    setEditId(null);
-    setEditedTask("");
+    if (editedTask.length > 0) {
+      const newTodos = todos.map((todo) =>
+        todoId === todo.id ? { ...todo, task: editedTask.trim() } : todo
+      );
+      setTodos(newTodos);
+      setEditId(null);
+      setEditedTask("");
+    } else {
+      alert("Cant save empty tasks");
+    }
   };
 
   const handleTaskDone = (todoId) => {
