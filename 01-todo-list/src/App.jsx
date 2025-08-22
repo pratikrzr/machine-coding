@@ -7,7 +7,7 @@ function App() {
   const [editId, setEditId] = useState(null);
   const [editedTask, setEditedTask] = useState("");
 
-  const randomId = () => Date.now() + Math.random();
+  const randomId = () => crypto.randomUUID();
 
   const handleAddClick = () => {
     if (task.length > 0) {
